@@ -1,20 +1,26 @@
 package main
 
 import (
-	"log"
+	"fmt"
 
 	"github.com/bismastr/mealprep-app/internal/db"
 	"github.com/bismastr/mealprep-app/internal/server"
+	"github.com/joho/godotenv"
 )
 
 func main() {
+	err := godotenv.Load()
+	if err != nil {
+		panic(err)
+	}
 
 	server := server.NewServer()
-	server.Start()
-	db, _ := db.NewDb()
 
-	err := db.DbClient.Ping()
+	db, err := db.NewDb()
 	if err != nil {
-		log.Fatalf("Failed to connect to database: %v", err)
+		fmt.Println(err)
 	}
+
+	defer db.DbClient.Close()
+	server.Start()
 }

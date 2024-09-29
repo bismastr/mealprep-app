@@ -1,17 +1,30 @@
 package db
 
-import "database/sql"
+import (
+	"os"
+
+	"github.com/jackc/pgx"
+)
 
 type DB struct {
-	DbClient *sql.DB
+	DbClient *pgx.ConnPool
 }
 
-/******  d3ddc269-3594-4ae9-a98d-3da1f532d48e  *******/
 func NewDb() (*DB, error) {
-	db, err := sql.Open("postgres", "postgres://postgres:postgres@localhost:5432/postgres?sslmode=disable")
+	config := pgx.ConnPoolConfig{
+		ConnConfig: pgx.ConnConfig{
+			Host:     os.Getenv("DB_HOST"),
+			Port:     5432,
+			User:     os.Getenv("DB_USERNAME"),
+			Password: os.Getenv("DB_PASSWORD"),
+			Database: "meal_prep",
+		},
+	}
+
+	dbpool, err := pgx.NewConnPool(config)
 	if err != nil {
 		return nil, err
 	}
 
-	return &DB{DbClient: db}, nil
+	return &DB{DbClient: dbpool}, nil
 }
