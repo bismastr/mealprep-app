@@ -9,18 +9,19 @@ import (
 )
 
 func main() {
+	//Load .env
 	err := godotenv.Load()
 	if err != nil {
 		panic(err)
 	}
-
-	server := server.NewServer()
-
+	//Init Db
 	db, err := db.NewDb()
 	if err != nil {
 		fmt.Println(err)
 	}
-
 	defer db.DbClient.Close()
+
+	server := server.NewServer(db)
 	server.Start()
+
 }

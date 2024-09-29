@@ -3,7 +3,7 @@ package mealPrep
 import "github.com/bismastr/mealprep-app/internal/db"
 
 type MealPrepRepository interface {
-	CreateRecipe(recipe *Recipe) error
+	CreateRecipe(recipe *Recipe) (*Recipe, error)
 	GetRecipeByID(id int) (*Recipe, error)
 }
 
@@ -18,20 +18,21 @@ func NewMealPrepRepository(db *db.DB) *MealPrepRepositoryImpl {
 }
 
 // CreateRecipe creates a new recipe and inserts it into the database.
-func (m *MealPrepRepositoryImpl) CreateRecipe(recipe *Recipe) error {
-	_, err := m.db.DbClient.Exec("INSERT INTO recipe (name) VALUES ($1)", recipe.Name)
+func (m *MealPrepRepositoryImpl) CreateRecipe(recipe *Recipe) (*Recipe, error) {
+	var newRecipe Recipe
+	err := m.db.DbClient.QueryRow("INSERT INTO recipe (name) VALUES ($1) RETURNING id, name", recipe.Name).Scan(&newRecipe.ID, &newRecipe.Name)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
-	return nil
+	return &newRecipe, nil
 }
 
 // GetRecipeByID returns a recipe by the given ID or an error if the recipe does not exist.
-func (m *MealPrepRepositoryImpl) GetRecipeByID(id int64) (*Recipe, error) {
+func (m *MealPrepRepositoryImpl) GetRecipeByID(id int) (*Recipe, error) {
 	var recipe Recipe
 
-	rows, err := m.db.DbClient.Query("SELECT * FROM Recipe WHERE id = ?", id)
+	rows, err := m.db.DbClient.Query("SELECT * FROM recipe WHERE id = $1", id)
 	if err != nil {
 		return nil, err
 	}

@@ -1,0 +1,9 @@
+## Ping
+GET http://localhost:8080/recipes/1265
+
+## 
+### Test POST with Form Values
+POST http://localhost:8080/recipes
+Content-Type: application/x-www-form-urlencoded
+
+name=Testingsdad
