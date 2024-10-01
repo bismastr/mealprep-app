@@ -1,9 +1,13 @@
-## Ping
-GET http://localhost:8080/recipes/1265
-
-## 
+### Ping
+GET http://localhost:8080/recipes/14
+ 
 ### Test POST with Form Values
 POST http://localhost:8080/recipes
 Content-Type: application/x-www-form-urlencoded
 
 name=Testingsdad
+
+### Test
+### Get recipes with pagination
+GET http://localhost:8080/recipes?page=1&pageSize=2
+Content-Type: application/jso

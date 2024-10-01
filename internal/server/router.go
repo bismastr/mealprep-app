@@ -14,6 +14,7 @@ func (s *Server) RegisterRoute() *http.ServeMux {
 	//MealPrep
 	mux.HandleFunc("POST /recipes", mealPrepController.CreateRecipe)
 	mux.HandleFunc("GET /recipes/{id}", mealPrepController.GetRecipeByID)
+	mux.HandleFunc("GET /recipes", mealPrepController.GetRecipePaginated)
 
 	mux.HandleFunc("/ping", func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte("pong"))

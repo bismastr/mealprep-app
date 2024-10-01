@@ -9,8 +9,8 @@ type AppUser struct {
 
 // Recipe represents a recipe created by a user
 type Recipe struct {
-	ID   int    `db:"id"`   // Primary key for the Recipe table
-	Name string `db:"name"` // Name of the recipe
+	ID   int    `db:"id" json:"id"`     // Primary key for the Recipe table
+	Name string `db:"name" json:"name"` // Name of the recipe
 }
 
 // Ingredient represents an ingredient associated with a recipe
@@ -33,4 +33,16 @@ type MealPrep struct {
 type MealPrepRecipe struct {
 	MealPrepID int `db:"meal_prep_id"` // Foreign key referencing the MealPrep table
 	RecipeID   int `db:"recipe_id"`    // Foreign key referencing the Recipe table
+}
+
+type GetRecipeResponse struct {
+	Data     []Recipe `json:"data"`
+	Message  string   `json:"message"`
+	Page     int      `json:"page"`
+	PageSize int      `json:"pageSize"`
+}
+
+type GetRecipeRequest struct {
+	Page     int `json:"page"`
+	PageSize int `json:"pageSize"`
 }

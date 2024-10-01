@@ -27,3 +27,12 @@ func (m *MealPrepService) GetRecipeByID(id int) (*Recipe, error) {
 
 	return recipe, nil
 }
+
+func (m *MealPrepService) GetRecipePaginated(page int, pageSize int) (*[]Recipe, error) {
+	recipe, err := m.Repository.GetRecipePaginated(page, pageSize)
+	if err != nil {
+		return nil, err
+	}
+
+	return recipe, nil
+}
