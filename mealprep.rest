@@ -9,5 +9,5 @@ name=Testingsdad
 
 ### Test
 ### Get recipes with pagination
-GET http://localhost:8080/recipes?page=1&pageSize=2
-Content-Type: application/jso
+GET http://localhost:8080/recipes?page=1&pageSize=10
+Content-Type: application/json
