@@ -3,10 +3,12 @@ package handler
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
 	"net/http"
 	"strconv"
 
 	"github.com/bismastr/mealprep-app/internal/mealPrep"
+	"github.com/bismastr/mealprep-app/internal/utils"
 )
 
 type MealPrepController struct {
@@ -51,6 +53,44 @@ func (m *MealPrepController) GetRecipeByID(w http.ResponseWriter, r *http.Reques
 	json.NewEncoder(w).Encode(recipe)
 }
 
+func (m *MealPrepController) CreateMealPrep(w http.ResponseWriter, r *http.Request) *AppError {
+	var mealPrepRequest mealPrep.MealPrep
+	utils.UnmarshalJSON(r, &mealPrepRequest)
+
+	fmt.Println(r.Body)
+
+	result, err := m.MealPrepService.CreateMealPrep(&mealPrepRequest)
+	if err != nil {
+		return &AppError{
+			Code:    http.StatusBadRequest,
+			Message: "unable to create meal prep",
+			Error:   err,
+		}
+	}
+
+	json.NewEncoder(w).Encode(result)
+	return nil
+}
+
+func (m *MealPrepController) AddRecipeToMealPrep(w http.ResponseWriter, r *http.Request) *AppError {
+	var recipeToMealPrepRequest mealPrep.MealPrepRecipe
+	utils.UnmarshalJSON(r, &recipeToMealPrepRequest)
+
+	err := m.MealPrepService.AddRecipeToMealprep(recipeToMealPrepRequest.MealPrepID, recipeToMealPrepRequest.RecipeID)
+	if err != nil {
+		return &AppError{
+			Code:    http.StatusBadRequest,
+			Message: "unable to add recipe to meal prep",
+			Error:   err,
+		}
+	}
+	//TODO need to improve success handling
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(map[string]string{"message": "success"})
+
+	return nil
+}
+
 func (m *MealPrepController) GetRecipePaginated(w http.ResponseWriter, r *http.Request) *AppError {
 	page, err := getIntFormValue(r, "page", 1)
 	if err != nil {
@@ -85,7 +125,6 @@ func (m *MealPrepController) GetRecipePaginated(w http.ResponseWriter, r *http.R
 			Message: "No data found in page " + strconv.Itoa(page),
 			Error:   errors.New("no data found"),
 		}
-
 	}
 
 	json.NewEncoder(w).Encode(recipes)

@@ -3,14 +3,23 @@ package mealPrep
 import "github.com/bismastr/mealprep-app/internal/db"
 
 type MealPrepRepository interface {
+	//Recipe
 	CreateRecipe(recipe *Recipe) (*Recipe, error)
 	GetRecipeByID(id int) (*Recipe, error)
 	AddItemToRecipe(recipeID int, ingredient *Ingredient) (*Ingredient, error)
 	GetRecipePaginated(page int, pageSize int) (*[]Recipe, error)
+	//MealPrep
+	CreateMealPrep(mealPrep *MealPrep) (*MealPrep, error)
+	AddRecipeToMealPrep(mealPrepID int, recipeID int) error
 }
 
 type MealPrepRepositoryImpl struct {
 	db *db.DB
+}
+
+// GetIngredientsForMealPrep implements MealPrepRepository.
+func (m *MealPrepRepositoryImpl) GetIngredientsForMealPrep(mealPrepID int) (*[]Ingredient, error) {
+	panic("unimplemented")
 }
 
 func NewMealPrepRepository(db *db.DB) *MealPrepRepositoryImpl {
@@ -19,7 +28,28 @@ func NewMealPrepRepository(db *db.DB) *MealPrepRepositoryImpl {
 	}
 }
 
-// CreateRecipe creates a new recipe and inserts it into the database.
+// Create a meal prep
+func (m *MealPrepRepositoryImpl) CreateMealPrep(mealPrep *MealPrep) (*MealPrep, error) {
+	var newMealPrep MealPrep
+	err := m.db.DbClient.QueryRow("INSERT INTO meal_prep (user_id, name) VALUES ($1, $2) RETURNING id, user_id, name", mealPrep.UserID, mealPrep.Name).Scan(&newMealPrep.ID, &newMealPrep.UserID, &newMealPrep.Name)
+	if err != nil {
+		return nil, err
+	}
+
+	return &newMealPrep, nil
+}
+
+// Join recipe and mealprep
+func (m *MealPrepRepositoryImpl) AddRecipeToMealPrep(mealPrepID int, recipeID int) error {
+	_, err := m.db.DbClient.Exec("INSERT INTO meal_prep_recipe (meal_prep_id, recipe_id) VALUES ($1, $2)", mealPrepID, recipeID)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// CreateRecipe creates a new recipe and inserts it into-- the database.
 func (m *MealPrepRepositoryImpl) CreateRecipe(recipe *Recipe) (*Recipe, error) {
 	var newRecipe Recipe
 	err := m.db.DbClient.QueryRow("INSERT INTO recipe (name) VALUES ($1) RETURNING id, name", recipe.Name).Scan(&newRecipe.ID, &newRecipe.Name)
@@ -66,6 +96,7 @@ func (m *MealPrepRepositoryImpl) AddItemToRecipe(recipeID int, ingredient *Ingre
 	return &newIngredient, nil
 }
 
+// Get Paginated Recipe
 func (m *MealPrepRepositoryImpl) GetRecipePaginated(page int, pageSize int) (*[]Recipe, error) {
 	offset := (page - 1) * pageSize
 	limit := pageSize

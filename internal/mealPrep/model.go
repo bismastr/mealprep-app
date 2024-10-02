@@ -24,9 +24,9 @@ type Ingredient struct {
 
 // MealPrep represents a meal preparation plan created by a user
 type MealPrep struct {
-	ID     int    `db:"id"`      // Primary key for the MealPrep table
-	UserID int    `db:"user_id"` // Foreign key referencing the AppUser table
-	Name   string `db:"name"`    // Name of the meal prep plan
+	ID     int    `db:"id" json:"id"`           // Primary key for the MealPrep table
+	UserID int    `db:"user_id" json:"user_id"` // Foreign key referencing the AppUser table
+	Name   string `db:"name" json:"name"`       // Name of the meal prep plan
 }
 
 // MealPrepRecipe is a join table linking meal preps and recipes

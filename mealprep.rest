@@ -11,3 +11,20 @@ name=Testingsdad
 ### Get recipes with pagination
 GET http://localhost:8080/recipes?page=1&pageSize=10
 Content-Type: application/json
+
+### Create Meal Prep
+POST http://localhost:8080/mealprep
+Content-Type: application/json
+
+{
+    "user_id": 1,
+    "name": "Oktober 2 - 2"
+}
+### Add Recipe 
+POST http://localhost:8080/mealprep/recipe
+Content-Type: application/json
+
+{
+    "meal_prep_id": 99,
+    "recipe_id": 1
+}
