@@ -84,7 +84,7 @@ func (m *MealPrepController) AddRecipeToMealPrep(w http.ResponseWriter, r *http.
 			Error:   err,
 		}
 	}
-	//TODO need to improve success handling
+
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(map[string]string{"message": "success"})
 
@@ -129,6 +129,28 @@ func (m *MealPrepController) GetRecipePaginated(w http.ResponseWriter, r *http.R
 
 	json.NewEncoder(w).Encode(recipes)
 
+	return nil
+}
+
+func (m *MealPrepController) GetIngredientsForMealPrep(w http.ResponseWriter, r *http.Request) *AppError {
+	id, err := strconv.Atoi(r.PathValue("id"))
+	if err != nil {
+		return &AppError{
+			Code:    http.StatusBadRequest,
+			Message: "invalid Id format",
+			Error:   err,
+		}
+	}
+	ingredient, err := m.MealPrepService.GetIngredientsForMealPrep(id)
+	if err != nil {
+		return &AppError{
+			Code:    http.StatusBadRequest,
+			Message: "unable to get ingredients for meal prep",
+			Error:   err,
+		}
+	}
+
+	json.NewEncoder(w).Encode(ingredient)
 	return nil
 }
 

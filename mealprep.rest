@@ -28,3 +28,8 @@ Content-Type: application/json
     "meal_prep_id": 99,
     "recipe_id": 1
 }
+
+### Get ingredients by mealprep
+GET http://localhost:8080/mealprep/99
+Content-Type: application/json
+

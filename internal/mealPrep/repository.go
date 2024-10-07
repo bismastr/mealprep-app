@@ -11,15 +11,34 @@ type MealPrepRepository interface {
 	//MealPrep
 	CreateMealPrep(mealPrep *MealPrep) (*MealPrep, error)
 	AddRecipeToMealPrep(mealPrepID int, recipeID int) error
+	GetIngredientsForMealPrep(mealPrepID int) (*[]Ingredient, error)
 }
 
 type MealPrepRepositoryImpl struct {
 	db *db.DB
 }
 
-// GetIngredientsForMealPrep implements MealPrepRepository.
 func (m *MealPrepRepositoryImpl) GetIngredientsForMealPrep(mealPrepID int) (*[]Ingredient, error) {
-	panic("unimplemented")
+	rows, err := m.db.DbClient.Query("SELECT i.name, i.quantity, i.unit FROM ingredient i JOIN recipe r ON i.recipe_id = r.id JOIN meal_prep_recipe mpr ON mpr.recipe_id = r.id JOIN meal_prep mp ON mpr.meal_prep_id = mp.id WHERE mp.id = $1", mealPrepID)
+	if err != nil {
+		return nil, err
+	}
+
+	var ingredients []Ingredient
+	for rows.Next() {
+		var ingredient Ingredient
+		err := rows.Scan(&ingredient.Name, &ingredient.Quantity, &ingredient.Unit)
+		if err != nil {
+			return nil, err
+		}
+		ingredients = append(ingredients, ingredient)
+	}
+
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+
+	return &ingredients, nil
 }
 
 func NewMealPrepRepository(db *db.DB) *MealPrepRepositoryImpl {
