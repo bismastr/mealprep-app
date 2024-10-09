@@ -18,6 +18,12 @@ type MealPrepRepositoryImpl struct {
 	db *db.DB
 }
 
+func NewMealPrepRepository(db *db.DB) *MealPrepRepositoryImpl {
+	return &MealPrepRepositoryImpl{
+		db: db,
+	}
+}
+
 func (m *MealPrepRepositoryImpl) GetIngredientsForMealPrep(mealPrepID int) (*[]Ingredient, error) {
 	rows, err := m.db.DbClient.Query("SELECT i.name, i.quantity, i.unit FROM ingredient i JOIN recipe r ON i.recipe_id = r.id JOIN meal_prep_recipe mpr ON mpr.recipe_id = r.id JOIN meal_prep mp ON mpr.meal_prep_id = mp.id WHERE mp.id = $1", mealPrepID)
 	if err != nil {
@@ -39,12 +45,6 @@ func (m *MealPrepRepositoryImpl) GetIngredientsForMealPrep(mealPrepID int) (*[]I
 	}
 
 	return &ingredients, nil
-}
-
-func NewMealPrepRepository(db *db.DB) *MealPrepRepositoryImpl {
-	return &MealPrepRepositoryImpl{
-		db: db,
-	}
 }
 
 // Create a meal prep

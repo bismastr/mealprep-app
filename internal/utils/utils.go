@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"io"
 	"net/http"
+	"strconv"
 )
 
 func UnmarshalJSON(r *http.Request, data interface{}) error {
@@ -20,4 +21,13 @@ func UnmarshalJSON(r *http.Request, data interface{}) error {
 	}
 
 	return nil
+}
+
+func GetIntFromValue(r *http.Request, key string, defaultValue int) (int, error) {
+	valueStr := r.FormValue(key)
+
+	if valueStr == "" {
+		return defaultValue, nil
+	}
+	return strconv.Atoi(valueStr)
 }

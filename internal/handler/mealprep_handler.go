@@ -11,6 +11,12 @@ import (
 	"github.com/bismastr/mealprep-app/internal/utils"
 )
 
+type Response struct {
+	Message    string      `json:"message"`
+	StatusCode int         `json:"status_code"`
+	Data       interface{} `json:"data"`
+}
+
 type MealPrepController struct {
 	MealPrepService *mealPrep.MealPrepService
 }
@@ -92,7 +98,7 @@ func (m *MealPrepController) AddRecipeToMealPrep(w http.ResponseWriter, r *http.
 }
 
 func (m *MealPrepController) GetRecipePaginated(w http.ResponseWriter, r *http.Request) *AppError {
-	page, err := getIntFormValue(r, "page", 1)
+	page, err := utils.GetIntFromValue(r, "page", 1)
 	if err != nil {
 		return &AppError{
 			Code:    http.StatusBadRequest,
@@ -101,7 +107,7 @@ func (m *MealPrepController) GetRecipePaginated(w http.ResponseWriter, r *http.R
 		}
 	}
 
-	pageSize, err := getIntFormValue(r, "pageSize", 10)
+	pageSize, err := utils.GetIntFromValue(r, "pageSize", 10)
 	if err != nil {
 		return &AppError{
 			Code:    http.StatusBadRequest,
@@ -150,15 +156,10 @@ func (m *MealPrepController) GetIngredientsForMealPrep(w http.ResponseWriter, r 
 		}
 	}
 
-	json.NewEncoder(w).Encode(ingredient)
+	json.NewEncoder(w).Encode(Response{
+		Data:       ingredient,
+		Message:    "success",
+		StatusCode: http.StatusOK,
+	})
 	return nil
-}
-
-func getIntFormValue(r *http.Request, key string, defaultValue int) (int, error) {
-	valueStr := r.FormValue(key)
-
-	if valueStr == "" {
-		return defaultValue, nil
-	}
-	return strconv.Atoi(valueStr)
 }
