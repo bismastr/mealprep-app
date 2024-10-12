@@ -7,8 +7,11 @@ type AppUser struct {
 }
 
 type Recipe struct {
-	ID   int    `db:"id" json:"id"`
-	Name string `db:"name" json:"name"`
+	ID             int    `db:"id" json:"id"`
+	Name           string `db:"name" json:"name"`
+	DifficultyTier int    `db:"difficulty_tier" json:"difficulty_tier"`
+	Rating         int    `db:"rating" json:"rating"`
+	CostTier       int    `db:"cost_tier" json:"cost_tier"`
 }
 
 type Ingredient struct {

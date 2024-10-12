@@ -128,7 +128,7 @@ func (m *MealPrepRepositoryImpl) GetRecipePaginated(page int, pageSize int) (*[]
 	var recipes []Recipe
 	for rows.Next() {
 		var recipe Recipe
-		err := rows.Scan(&recipe.ID, &recipe.Name)
+		err := rows.Scan(&recipe.ID, &recipe.Name, &recipe.DifficultyTier, &recipe.CostTier, &recipe.Rating)
 		if err != nil {
 			return nil, err
 		}
