@@ -37,13 +37,20 @@ func (m *MealPrepService) GetRecipePaginated(page int, pageSize int) (*[]Recipe,
 	return recipe, nil
 }
 
-func (m *MealPrepService) CreateMealPrep(mealPrep *MealPrep) (*MealPrep, error) {
-	result, err := m.Repository.CreateMealPrep(mealPrep)
+func (m *MealPrepService) CreateMealPrep(mealPrep *CreateMealPrepRequest) error {
+	mp, err := m.Repository.CreateMealPrep(mealPrep.Name, mealPrep.UserID)
 	if err != nil {
-		return nil, err
+		return err
 	}
 
-	return result, nil
+	for _, r := range mealPrep.RecipeIds {
+		err = m.Repository.AddRecipeToMealPrep(mp.ID, r)
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
 }
 
 func (m *MealPrepService) AddRecipeToMealprep(mealPrepId int, recipeId int) error {

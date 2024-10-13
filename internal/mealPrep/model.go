@@ -32,3 +32,9 @@ type MealPrepRecipe struct {
 	MealPrepID int `db:"meal_prep_id"`
 	RecipeID   int `db:"recipe_id"`
 }
+
+type CreateMealPrepRequest struct {
+	Name      string `json:"name"`
+	UserID    int    `json:"user_id"`
+	RecipeIds []int  `json:"recipe_ids"`
+}

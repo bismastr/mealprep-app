@@ -59,48 +59,52 @@ func (m *MealPrepController) GetRecipeByID(w http.ResponseWriter, r *http.Reques
 	json.NewEncoder(w).Encode(recipe)
 }
 
-func (m *MealPrepController) CreateMealPrep(w http.ResponseWriter, r *http.Request) *AppError {
-	var mealPrepRequest mealPrep.MealPrep
+func (m *MealPrepController) CreateMealPrep(w http.ResponseWriter, r *http.Request) (*AppSucces, *AppError) {
+	var mealPrepRequest mealPrep.CreateMealPrepRequest
 	utils.UnmarshalJSON(r, &mealPrepRequest)
 
-	fmt.Println(r.Body)
+	fmt.Println(mealPrepRequest.UserID)
 
-	result, err := m.MealPrepService.CreateMealPrep(&mealPrepRequest)
+	err := m.MealPrepService.CreateMealPrep(&mealPrepRequest)
 	if err != nil {
-		return &AppError{
+		return nil, &AppError{
 			Code:    http.StatusBadRequest,
 			Message: "unable to create meal prep",
 			Error:   err,
 		}
 	}
 
-	json.NewEncoder(w).Encode(result)
-	return nil
+	return &AppSucces{
+		Code:    http.StatusOK,
+		Message: "successfully created meal prep",
+		Data:    nil,
+	}, nil
 }
 
-func (m *MealPrepController) AddRecipeToMealPrep(w http.ResponseWriter, r *http.Request) *AppError {
+func (m *MealPrepController) AddRecipeToMealPrep(w http.ResponseWriter, r *http.Request) (*AppSucces, *AppError) {
 	var recipeToMealPrepRequest mealPrep.MealPrepRecipe
 	utils.UnmarshalJSON(r, &recipeToMealPrepRequest)
 
 	err := m.MealPrepService.AddRecipeToMealprep(recipeToMealPrepRequest.MealPrepID, recipeToMealPrepRequest.RecipeID)
 	if err != nil {
-		return &AppError{
+		return nil, &AppError{
 			Code:    http.StatusBadRequest,
 			Message: "unable to add recipe to meal prep",
 			Error:   err,
 		}
 	}
 
-	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(map[string]string{"message": "success"})
-
-	return nil
+	return &AppSucces{
+		Code:    http.StatusOK,
+		Message: "successfully added recipe to meal prep",
+		Data:    nil,
+	}, nil
 }
 
-func (m *MealPrepController) GetRecipePaginated(w http.ResponseWriter, r *http.Request) *AppError {
+func (m *MealPrepController) GetRecipePaginated(w http.ResponseWriter, r *http.Request) (*AppSucces, *AppError) {
 	page, err := utils.GetIntFromValue(r, "page", 1)
 	if err != nil {
-		return &AppError{
+		return nil, &AppError{
 			Code:    http.StatusBadRequest,
 			Message: "invalid page format",
 			Error:   err,
@@ -109,7 +113,7 @@ func (m *MealPrepController) GetRecipePaginated(w http.ResponseWriter, r *http.R
 
 	pageSize, err := utils.GetIntFromValue(r, "pageSize", 10)
 	if err != nil {
-		return &AppError{
+		return nil, &AppError{
 			Code:    http.StatusBadRequest,
 			Message: "invalid pageSize format",
 			Error:   err,
@@ -118,7 +122,7 @@ func (m *MealPrepController) GetRecipePaginated(w http.ResponseWriter, r *http.R
 
 	recipes, err := m.MealPrepService.GetRecipePaginated(page, pageSize)
 	if err != nil {
-		return &AppError{
+		return nil, &AppError{
 			Code:    http.StatusBadRequest,
 			Message: "invalid unable to get recipe",
 			Error:   err,
@@ -126,22 +130,24 @@ func (m *MealPrepController) GetRecipePaginated(w http.ResponseWriter, r *http.R
 	}
 
 	if len(*recipes) < 1 {
-		return &AppError{
+		return nil, &AppError{
 			Code:    http.StatusNotFound,
 			Message: "No data found in page " + strconv.Itoa(page),
 			Error:   errors.New("no data found"),
 		}
 	}
 
-	json.NewEncoder(w).Encode(recipes)
-
-	return nil
+	return &AppSucces{
+		Code:    http.StatusOK,
+		Message: "success",
+		Data:    recipes,
+	}, nil
 }
 
-func (m *MealPrepController) GetIngredientsForMealPrep(w http.ResponseWriter, r *http.Request) *AppError {
+func (m *MealPrepController) GetIngredientsForMealPrep(w http.ResponseWriter, r *http.Request) (*AppSucces, *AppError) {
 	id, err := strconv.Atoi(r.PathValue("id"))
 	if err != nil {
-		return &AppError{
+		return nil, &AppError{
 			Code:    http.StatusBadRequest,
 			Message: "invalid Id format",
 			Error:   err,
@@ -149,17 +155,16 @@ func (m *MealPrepController) GetIngredientsForMealPrep(w http.ResponseWriter, r 
 	}
 	ingredient, err := m.MealPrepService.GetIngredientsForMealPrep(id)
 	if err != nil {
-		return &AppError{
+		return nil, &AppError{
 			Code:    http.StatusBadRequest,
 			Message: "unable to get ingredients for meal prep",
 			Error:   err,
 		}
 	}
 
-	json.NewEncoder(w).Encode(Response{
-		Data:       ingredient,
-		Message:    "success",
-		StatusCode: http.StatusOK,
-	})
-	return nil
+	return &AppSucces{
+		Code:    http.StatusOK,
+		Message: "success",
+		Data:    ingredient,
+	}, nil
 }

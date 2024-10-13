@@ -9,7 +9,7 @@ type MealPrepRepository interface {
 	AddItemToRecipe(recipeID int, ingredient *Ingredient) (*Ingredient, error)
 	GetRecipePaginated(page int, pageSize int) (*[]Recipe, error)
 	//MealPrep
-	CreateMealPrep(mealPrep *MealPrep) (*MealPrep, error)
+	CreateMealPrep(name string, userId int) (*MealPrep, error)
 	AddRecipeToMealPrep(mealPrepID int, recipeID int) error
 	GetIngredientsForMealPrep(mealPrepID int) (*[]Ingredient, error)
 }
@@ -48,9 +48,9 @@ func (m *MealPrepRepositoryImpl) GetIngredientsForMealPrep(mealPrepID int) (*[]I
 }
 
 // Create a meal prep
-func (m *MealPrepRepositoryImpl) CreateMealPrep(mealPrep *MealPrep) (*MealPrep, error) {
+func (m *MealPrepRepositoryImpl) CreateMealPrep(name string, userId int) (*MealPrep, error) {
 	var newMealPrep MealPrep
-	err := m.db.DbClient.QueryRow("INSERT INTO meal_prep (user_id, name) VALUES ($1, $2) RETURNING id, user_id, name", mealPrep.UserID, mealPrep.Name).Scan(&newMealPrep.ID, &newMealPrep.UserID, &newMealPrep.Name)
+	err := m.db.DbClient.QueryRow("INSERT INTO meal_prep (user_id, name) VALUES ($1, $2) RETURNING id, user_id, name", userId, name).Scan(&newMealPrep.ID, &newMealPrep.UserID, &newMealPrep.Name)
 	if err != nil {
 		return nil, err
 	}
