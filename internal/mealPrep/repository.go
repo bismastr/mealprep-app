@@ -11,7 +11,7 @@ type MealPrepRepository interface {
 	//MealPrep
 	CreateMealPrep(name string, userId int) (*MealPrep, error)
 	AddRecipeToMealPrep(mealPrepID int, recipeID int) error
-	GetIngredientsForMealPrep(mealPrepID int) (*[]Ingredient, error)
+	GetIngredientsForMealPrep(mealPrepID int) (*Recipe, error)
 }
 
 type MealPrepRepositoryImpl struct {
@@ -24,27 +24,38 @@ func NewMealPrepRepository(db *db.DB) *MealPrepRepositoryImpl {
 	}
 }
 
-func (m *MealPrepRepositoryImpl) GetIngredientsForMealPrep(mealPrepID int) (*[]Ingredient, error) {
-	rows, err := m.db.DbClient.Query("SELECT i.name, i.quantity, i.unit FROM ingredient i JOIN recipe r ON i.recipe_id = r.id JOIN meal_prep_recipe mpr ON mpr.recipe_id = r.id JOIN meal_prep mp ON mpr.meal_prep_id = mp.id WHERE mp.id = $1", mealPrepID)
+func (m *MealPrepRepositoryImpl) GetIngredientsForMealPrep(mealPrepID int) (*Recipe, error) {
+	rows, err := m.db.DbClient.Query("SELECT r.name, r.cost_tier, i.name, i.quantity, i.unit FROM ingredient i JOIN recipe r ON i.recipe_id = r.id JOIN meal_prep_recipe mpr ON mpr.recipe_id = r.id JOIN meal_prep mp ON mpr.meal_prep_id = mp.id WHERE mp.id = $1", mealPrepID)
 	if err != nil {
 		return nil, err
 	}
 
-	var ingredients []Ingredient
+	var recipe Recipe
+	firstIndex := true
 	for rows.Next() {
+		var name string
+		var costTier int
 		var ingredient Ingredient
-		err := rows.Scan(&ingredient.Name, &ingredient.Quantity, &ingredient.Unit)
+
+		err := rows.Scan(&name, &costTier, &ingredient.Name, &ingredient.Quantity, &ingredient.Unit)
 		if err != nil {
 			return nil, err
 		}
-		ingredients = append(ingredients, ingredient)
+
+		if firstIndex {
+			recipe.Name = name
+			recipe.CostTier = costTier
+		}
+
+		recipe.Ingredients = append(recipe.Ingredients, ingredient)
+		firstIndex = false
 	}
 
 	if err := rows.Err(); err != nil {
 		return nil, err
 	}
 
-	return &ingredients, nil
+	return &recipe, nil
 }
 
 // Create a meal prep

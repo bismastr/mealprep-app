@@ -17,7 +17,7 @@ func NewDb() (*DB, error) {
 			Port:     5432,
 			User:     os.Getenv("DB_USERNAME"),
 			Password: os.Getenv("DB_PASSWORD"),
-			Database: "meal_prep",
+			Database: "mealprep",
 		},
 	}
 

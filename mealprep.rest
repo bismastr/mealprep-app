@@ -1,27 +1,27 @@
 ### Ping
-GET http://localhost:8080/recipes/1
+GET http://localhost:8084/recipes/1
  
 ### Test POST with Form Values
-POST http://localhost:8080/recipes
+POST http://localhost:8084/recipes
 Content-Type: application/x-www-form-urlencoded
 
 name=Testingsdad
 
 ### Get recipes with pagination
-GET http://localhost:8080/recipes
+GET http://localhost:8084/recipes
 Content-Type: application/json
 
 
 ### Create Meal Prep
-POST http://localhost:8080/mealprep
+POST http://localhost:8084/mealprep
 Content-Type: application/json
 {
     "user_id": 1,
     "name": "Oktober 2 - 2",
-    "recipe_ids": [1, 2]
+    "recipe_ids": [1, 2, 3]
 }
 ### Add Recipe 
-POST http://localhost:8080/mealprep/recipe
+POST http://localhost:8084/mealprep/recipe
 Content-Type: application/json
 
 {
@@ -30,5 +30,5 @@ Content-Type: application/json
 }
 
 ### Get ingredients by mealprep
-GET http://localhost:8080/mealprep/99
+GET http://localhost:8084/mealprep/1
 Content-Type: application/json

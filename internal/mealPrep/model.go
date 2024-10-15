@@ -2,39 +2,40 @@ package mealPrep
 
 type AppUser struct {
 	ID    int    `db:"id"`
-	Name  string `db:"name"`
-	Email string `db:"email"`
+	Name  string `db:"name" json:"name,omitempty"`
+	Email string `db:"email" json:"email,omitempty"`
 }
 
 type Recipe struct {
-	ID             int    `db:"id" json:"id"`
-	Name           string `db:"name" json:"name"`
-	DifficultyTier int    `db:"difficulty_tier" json:"difficulty_tier"`
-	Rating         int    `db:"rating" json:"rating"`
-	CostTier       int    `db:"cost_tier" json:"cost_tier"`
+	ID             int          `db:"id" json:"id,omitempty"`
+	Name           string       `db:"name" json:"name,omitempty"`
+	DifficultyTier int          `db:"difficulty_tier" json:"difficulty_tier,omitempty"`
+	Rating         int          `db:"rating" json:"rating,omitempty"`
+	CostTier       int          `db:"cost_tier" json:"cost_tier,omitempty"`
+	Ingredients    []Ingredient `json:"ingredients,omitempty"`
 }
 
 type Ingredient struct {
-	ID       int    `db:"id"`
-	RecipeID int    `db:"recipe_id"`
-	Name     string `db:"name"`
-	Quantity string `db:"quantity"`
-	Unit     string `db:"unit"`
+	ID       int    `db:"id" json:"id,omitempty"`
+	RecipeID int    `db:"recipe_id" json:"recipe_id,omitempty"`
+	Name     string `db:"name" json:"name,omitempty"`
+	Quantity string `db:"quantity" json:"quantity,omitempty"`
+	Unit     string `db:"unit" json:"unit,omitempty"`
 }
 
 type MealPrep struct {
-	ID     int    `db:"id" json:"id"`
-	UserID int    `db:"user_id" json:"user_id"`
-	Name   string `db:"name" json:"name"`
+	ID     int    `db:"id" json:"id,omitempty"`
+	UserID int    `db:"user_id" json:"user_id,omitempty"`
+	Name   string `db:"name" json:"name,omitempty"`
 }
 
 type MealPrepRecipe struct {
-	MealPrepID int `db:"meal_prep_id"`
-	RecipeID   int `db:"recipe_id"`
+	MealPrepID int `db:"meal_prep_id" json:"meal_prep_id,omitempty"`
+	RecipeID   int `db:"recipe_id" json:"recipe_id,omitempty"`
 }
 
 type CreateMealPrepRequest struct {
-	Name      string `json:"name"`
-	UserID    int    `json:"user_id"`
-	RecipeIds []int  `json:"recipe_ids"`
+	Name      string `json:"name,omitempty"`
+	UserID    int    `json:"user_id,omitempty"`
+	RecipeIds []int  `json:"recipe_ids,omitempty"`
 }

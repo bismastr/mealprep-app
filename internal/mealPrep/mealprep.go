@@ -62,11 +62,11 @@ func (m *MealPrepService) AddRecipeToMealprep(mealPrepId int, recipeId int) erro
 	return nil
 }
 
-func (m *MealPrepService) GetIngredientsForMealPrep(mealPrepId int) (*[]Ingredient, error) {
-	ingredients, err := m.Repository.GetIngredientsForMealPrep(mealPrepId)
+func (m *MealPrepService) GetIngredientsForMealPrep(mealPrepId int) (*Recipe, error) {
+	recipe, err := m.Repository.GetIngredientsForMealPrep(mealPrepId)
 	if err != nil {
 		return nil, err
 	}
 
-	return ingredients, nil
+	return recipe, nil
 }
