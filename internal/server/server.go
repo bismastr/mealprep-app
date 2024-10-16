@@ -15,14 +15,14 @@ type Server struct {
 func NewServer(db *db.DB) *Server {
 	return &Server{
 		server: &http.Server{
-			Addr: ":8084",
+			Addr: ":8080",
 		},
 		db: db,
 	}
 }
 
 func (s *Server) Start() error {
-	fmt.Println("Server listening on port 8084")
+	fmt.Println("Server listening on port 8080")
 	s.server.Handler = s.RegisterRoute()
 	return s.server.ListenAndServe()
 }
