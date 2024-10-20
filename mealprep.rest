@@ -18,7 +18,7 @@ Content-Type: application/json
 {
     "user_id": 1,
     "name": "Oktober 2 - 2",
-    "recipe_ids": [1, 2, 3]
+    "recipe_ids": [1, 2]
 }
 ### Add Recipe 
 POST http://localhost:8080/mealprep/recipe

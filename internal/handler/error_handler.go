@@ -2,6 +2,7 @@ package handler
 
 import (
 	"encoding/json"
+	"fmt"
 	"log"
 	"net/http"
 )
@@ -21,9 +22,16 @@ type AppSucces struct {
 type AppHandler func(http.ResponseWriter, *http.Request) (*AppSucces, *AppError)
 
 func (fn AppHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json")
 	w.Header().Set("Access-Control-Allow-Origin", "http://localhost:5173")
-	w.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
+	w.Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS")
+	w.Header().Set("Access-Control-Allow-Headers", "Accept, Content-Type, Origin, Referer")
+	w.Header().Set("Access-Control-Allow-Credentials", "true")
+
+	if r.Method == http.MethodOptions {
+		fmt.Println("OPTIONS HANDLER")
+		w.WriteHeader(http.StatusOK)
+		return
+	}
 
 	s, e := fn(w, r)
 	if e != nil {

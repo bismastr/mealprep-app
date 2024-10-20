@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	"github.com/bismastr/mealprep-app/internal/db"
+	"github.com/rs/cors"
 )
 
 type Server struct {
@@ -23,6 +24,8 @@ func NewServer(db *db.DB) *Server {
 
 func (s *Server) Start() error {
 	fmt.Println("Server listening on port 8080")
-	s.server.Handler = s.RegisterRoute()
+	handler := cors.Default().Handler(s.RegisterRoute())
+
+	s.server.Handler = handler
 	return s.server.ListenAndServe()
 }
