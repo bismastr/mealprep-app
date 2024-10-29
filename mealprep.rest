@@ -20,6 +20,9 @@ Content-Type: application/json
     "name": "Oktober 2 - 2",
     "recipe_ids": [1, 2]
 }
+
+##Get Meal
+GET http://localhost:8080/mealprep
 ### Add Recipe 
 POST http://localhost:8080/mealprep/recipe
 Content-Type: application/json

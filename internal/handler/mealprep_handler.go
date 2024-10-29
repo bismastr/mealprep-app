@@ -65,7 +65,7 @@ func (m *MealPrepController) CreateMealPrep(w http.ResponseWriter, r *http.Reque
 
 	fmt.Println(mealPrepRequest.UserID)
 
-	err := m.MealPrepService.CreateMealPrep(&mealPrepRequest)
+	res, err := m.MealPrepService.CreateMealPrep(&mealPrepRequest)
 	if err != nil {
 		return nil, &AppError{
 			Code:    http.StatusBadRequest,
@@ -77,7 +77,7 @@ func (m *MealPrepController) CreateMealPrep(w http.ResponseWriter, r *http.Reque
 	return &AppSucces{
 		Code:    http.StatusOK,
 		Message: "successfully created meal prep",
-		Data:    nil,
+		Data:    res,
 	}, nil
 }
 
