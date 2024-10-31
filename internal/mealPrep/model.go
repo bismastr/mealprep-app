@@ -13,6 +13,7 @@ type Recipe struct {
 	Rating         int          `db:"rating" json:"rating,omitempty"`
 	CostTier       int          `db:"cost_tier" json:"cost_tier,omitempty"`
 	Ingredients    []Ingredient `json:"ingredients,omitempty"`
+	Description    string       `db:"description" json:"description,omitempty"`
 }
 
 type Ingredient struct {

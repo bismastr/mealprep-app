@@ -19,6 +19,7 @@ func (s *Server) RegisterRoute() *http.ServeMux {
 	mux.Handle("POST /mealprep", handler.AppHandler(mealPrepController.CreateMealPrep))
 	mux.Handle("POST /mealprep/recipe", handler.AppHandler(mealPrepController.AddRecipeToMealPrep))
 	mux.Handle("GET /mealprep/{id}", handler.AppHandler(mealPrepController.GetIngredientsForMealPrep))
+	mux.Handle("GET /mealprep/user/{id}", handler.AppHandler(mealPrepController.GetMealPrepByUserId))
 
 	return mux
 }

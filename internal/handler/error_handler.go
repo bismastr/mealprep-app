@@ -26,6 +26,7 @@ func (fn AppHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS")
 	w.Header().Set("Access-Control-Allow-Headers", "Accept, Content-Type, Origin, Referer")
 	w.Header().Set("Access-Control-Allow-Credentials", "true")
+	w.Header().Add("Content-Type", "application/json")
 
 	if r.Method == http.MethodOptions {
 		fmt.Println("OPTIONS HANDLER")

@@ -168,3 +168,29 @@ func (m *MealPrepController) GetIngredientsForMealPrep(w http.ResponseWriter, r 
 		Data:    ingredient,
 	}, nil
 }
+
+func (m *MealPrepController) GetMealPrepByUserId(w http.ResponseWriter, r *http.Request) (*AppSucces, *AppError) {
+	id, err := strconv.Atoi(r.PathValue("id"))
+	if err != nil {
+		return nil, &AppError{
+			Code:    http.StatusBadRequest,
+			Message: "invalid Id format",
+			Error:   err,
+		}
+	}
+
+	mealPrep, err := m.MealPrepService.GetMealPrepByUserId(id)
+	if err != nil {
+		return nil, &AppError{
+			Code:    http.StatusBadRequest,
+			Message: "unable to get ingredients for meal prep",
+			Error:   err,
+		}
+	}
+
+	return &AppSucces{
+		Code:    http.StatusOK,
+		Message: "success",
+		Data:    mealPrep,
+	}, nil
+}

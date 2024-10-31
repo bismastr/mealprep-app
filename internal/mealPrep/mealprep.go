@@ -70,3 +70,12 @@ func (m *MealPrepService) GetIngredientsForMealPrep(mealPrepId int) (*Recipe, er
 
 	return recipe, nil
 }
+
+func (m *MealPrepService) GetMealPrepByUserId(userId int) (*[]MealPrep, error) {
+	res, err := m.Repository.GetMealPrep(userId)
+	if err != nil {
+		return nil, err
+	}
+
+	return res, nil
+}

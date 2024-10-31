@@ -9,6 +9,7 @@ type MealPrepRepository interface {
 	AddItemToRecipe(recipeID int, ingredient *Ingredient) (*Ingredient, error)
 	GetRecipePaginated(page int, pageSize int) (*[]Recipe, error)
 	//MealPrep
+	GetMealPrep(userId int) (*[]MealPrep, error)
 	CreateMealPrep(name string, userId int) (*MealPrep, error)
 	AddRecipeToMealPrep(mealPrepID int, recipeID int) error
 	GetIngredientsForMealPrep(mealPrepID int) (*Recipe, error)
@@ -22,6 +23,28 @@ func NewMealPrepRepository(db *db.DB) *MealPrepRepositoryImpl {
 	return &MealPrepRepositoryImpl{
 		db: db,
 	}
+}
+
+func (m *MealPrepRepositoryImpl) GetMealPrep(userId int) (*[]MealPrep, error) {
+	var listMealPrep []MealPrep
+
+	rows, err := m.db.DbClient.Query("SELECT * FROM meal_prep WHERE user_id = $1", userId)
+	if err != nil {
+		return nil, err
+	}
+
+	defer rows.Close()
+	for rows.Next() {
+		var mealPrep MealPrep
+		err := rows.Scan(&mealPrep.ID, &mealPrep.UserID, &mealPrep.Name)
+		if err != nil {
+			return nil, err
+		}
+
+		listMealPrep = append(listMealPrep, mealPrep)
+	}
+
+	return &listMealPrep, nil
 }
 
 func (m *MealPrepRepositoryImpl) GetIngredientsForMealPrep(mealPrepID int) (*Recipe, error) {
@@ -139,7 +162,7 @@ func (m *MealPrepRepositoryImpl) GetRecipePaginated(page int, pageSize int) (*[]
 	var recipes []Recipe
 	for rows.Next() {
 		var recipe Recipe
-		err := rows.Scan(&recipe.ID, &recipe.Name, &recipe.DifficultyTier, &recipe.CostTier, &recipe.Rating)
+		err := rows.Scan(&recipe.ID, &recipe.Name, &recipe.DifficultyTier, &recipe.CostTier, &recipe.Rating, &recipe.Description)
 		if err != nil {
 			return nil, err
 		}
