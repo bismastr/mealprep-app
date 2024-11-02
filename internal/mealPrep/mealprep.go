@@ -77,5 +77,10 @@ func (m *MealPrepService) GetMealPrepByUserId(userId int) (*[]MealPrep, error) {
 		return nil, err
 	}
 
+	if res == nil || len(*res) == 0 {
+		emptySlice := []MealPrep{}
+		return &emptySlice, nil
+	}
+
 	return res, nil
 }
